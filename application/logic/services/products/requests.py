@@ -28,12 +28,7 @@ class CreateProductFields(BaseModel):
     fat: float
 
 
-class UpdateProductFields(BaseModel):
-    name: Optional[str]
-    calories: Optional[float]
-    protein: Optional[float]
-    carbohydrate: Optional[float]
-    fat: Optional[float]
+class UpdateProductFields(CreateProductFields): ...
 
 
 class CreateProductRequest(BaseModel):

@@ -12,16 +12,22 @@ __all__ = [
 ]
 
 
-class AddProductRecordResponse(BaseModel):
+class BaseResponse(BaseModel):
+    class Config:
+        validate_assignment = True
+        arbitrary_types_allowed = True
+
+
+class AddProductRecordResponse(BaseResponse):
     entity: ProductRecord
 
 
-class UpdateProductRecordResponse(BaseModel):
+class UpdateProductRecordResponse(BaseResponse):
     entity: ProductRecord
 
 
 class DeleteProductRecordResponse(BaseModel): ...
 
 
-class ListProductRecordResponse(BaseModel):
+class ListProductRecordResponse(BaseResponse):
     entities: list[ProductRecord]
