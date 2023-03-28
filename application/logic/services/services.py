@@ -6,6 +6,8 @@ from .user import UserService
 from .tokens import TokensService
 from .auth import AuthService
 from .telegram import TelegramExternalService, TelegramWebhookService
+from .product_record import ProductRecordService
+from .products import ProductsService
 
 from ..repositories import MemoryRepository
 
@@ -42,4 +44,17 @@ class Services(containers.DeclarativeContainer):
         telegram_service=external_telegram,
         user_service=user,
         auth_bot_token=Settings.TELEGRAM_BOT_TOKEN,
+    )
+
+    products_repo = MemoryRepository(primary_key='id')
+
+    products_service = providers.Factory(
+        ProductsService,
+        products_repo=products_repo
+    )
+
+    prodict_record_service = providers.Factory(
+        ProductRecordService,
+        product_record_repo=MemoryRepository(primary_key='id'),
+        products_repo=products_repo,
     )
