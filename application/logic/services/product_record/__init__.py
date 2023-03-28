@@ -1,3 +1,3 @@
 from .requests import *
-from .service import ProductsService
 from .responses import *
+from .service import ProductRecordService
