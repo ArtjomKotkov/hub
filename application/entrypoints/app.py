@@ -1,28 +1,22 @@
-from fastapi import FastAPI, Depends
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
-from dependency_injector.wiring import Provide, inject
+from pydantic import BaseConfig
 
-from .telegram import telegram_app
-from application.logic import AuthService, AuthRequest, Logic, AuthResponse
+from errors import Error
 
-entrypoints = FastAPI()
+from .api import app_api
 
-entrypoints.mount('/telegram', telegram_app)
 
-origins = [
-    "http://akotasadgsdg.com",
-]
+app_entrypoints = FastAPI()
+BaseConfig.arbitrary_types_allowed = True
 
-entrypoints.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app_entrypoints.mount('/api', app_api)
 
-@entrypoints.post('/auth', response_model=AuthResponse)
-@inject
-def test(request: AuthRequest, auth_service: AuthService = Depends(Provide[Logic.services.auth_service])):
-    return auth_service.auth(request)
+
+@app_entrypoints.exception_handler(Error)
+def errors_handler(exception: Error):
+    return JSONResponse(
+        status_code=exception.code,
+        content={"message": exception.description},
+    )

@@ -44,8 +44,10 @@ class ProductRecordService:
             raise NotFound('product-record-not-found')
 
         new_model_record = ProductRecord(
-            **old_product_record.as_dict(),
-            **request.fields.dict(exclude_unset=True),
+            **{
+                **old_product_record.dict(),
+                **request.fields.dict(),
+            }
         )
 
         self._product_record_repo.save(new_model_record)

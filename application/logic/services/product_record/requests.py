@@ -1,7 +1,7 @@
-from datetime import datetime, date
-from typing import Optional
+from datetime import date
 
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel, UUID4, Extra
+
 
 __all__ = [
     'AddProductRecordFields',
@@ -19,8 +19,8 @@ class AddProductRecordFields(BaseModel):
     date: date
 
 
-class UpdateProductRecordFields(BaseModel):
-    weight: Optional[int]
+class UpdateProductRecordFields(BaseModel, extra=Extra.ignore):
+    weight: int
 
 
 class AddProductRecordRequest(BaseModel):
@@ -36,5 +36,5 @@ class DeleteProductRecordRequest(BaseModel):
     id: int
 
 
-class ListProductRecordRequest:
+class ListProductRecordRequest(BaseModel):
     date: date

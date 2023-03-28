@@ -1,1 +1,1 @@
-from .app import entrypoints
+from .app import app_entrypoints

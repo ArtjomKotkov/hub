@@ -44,12 +44,16 @@ class ProductsService:
         if product is None:
             raise NotFound()
 
-        for field, value in request.fields.dict().items():
-            setattr(product, field, value)
+        new_product = Product(
+            **{
+                'id': product.id,
+                **request.fields.dict(),
+            }
+        )
 
-        product = self._products_repo.save(product)
+        new_product = self._products_repo.save(new_product)
 
-        return UpdateProductResponse(entiry=product)
+        return UpdateProductResponse(entiry=new_product)
 
     def delete(self, request: DeleteProductRequest) -> DeleteProductResponse:
         product = self._products_repo.find_one(Product.id == request.id)
