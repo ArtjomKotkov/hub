@@ -1,22 +1,15 @@
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-
-from pydantic import BaseConfig
-
 from errors import Error
 
-from .api import app_api
+from .api import ApiApp
+from .shared import RestApp
+from .error_handlers import errors_handler
 
 
-app_entrypoints = FastAPI()
-BaseConfig.arbitrary_types_allowed = True
-
-app_entrypoints.mount('/api', app_api)
-
-
-@app_entrypoints.exception_handler(Error)
-def errors_handler(exception: Error):
-    return JSONResponse(
-        status_code=exception.code,
-        content={"message": exception.description},
-    )
+class Entrypoints(RestApp):
+    sub_apps = [
+        ('/api', ApiApp),
+    ]
+    exception_handlers = [
+        (Error, errors_handler),
+    ]
+    propagate_exception_handlers = True

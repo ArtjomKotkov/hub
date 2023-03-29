@@ -1,1 +1,1 @@
-from .app import app_hub
+from .app import HubApp

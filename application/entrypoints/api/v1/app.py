@@ -1,10 +1,11 @@
-from fastapi import FastAPI
+from .hub import HubApp
+from .external import ExternalApp
 
-from .hub import app_hub
-from .external import app_external
+from ...shared import RestApp
 
 
-app_v1 = FastAPI()
-app_v1.mount('/hub', app_hub)
-app_v1.mount('/', app_external)
-
+class V1App(RestApp):
+    sub_apps = [
+        ('/hub', HubApp),
+        ('/external', ExternalApp),
+    ]

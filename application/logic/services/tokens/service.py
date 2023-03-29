@@ -4,6 +4,8 @@ from errors import NotFound
 
 from jwt import encode
 
+from settings import Settings
+
 from ...repositories import Repository
 from ...models import AuthToken, RefreshToken, User
 
@@ -15,11 +17,6 @@ from .exceptions import TokenExpired
 __all__ = [
     'TokensService',
 ]
-
-
-SECRET = 'some_secret_phrase'
-AUTH_TOKEN_EXPIRES_IN = 60*60
-REFRESH_TOKEN_EXPIRES_IN = 60*60*24*30
 
 
 class TokensService:
@@ -88,8 +85,8 @@ class TokensService:
     def _generate_tokens(self, id: int) -> tuple[str, str]:
         current_datetime = datetime.now()
 
-        auth_token_expiration = current_datetime + timedelta(seconds=AUTH_TOKEN_EXPIRES_IN)
-        refresh_token_expiration = current_datetime + timedelta(seconds=REFRESH_TOKEN_EXPIRES_IN)
+        auth_token_expiration = current_datetime + timedelta(seconds=Settings.AUTH_TOKEN_EXPIRES_IN)
+        refresh_token_expiration = current_datetime + timedelta(seconds=Settings.REFRESH_TOKEN_EXPIRES_IN)
 
         auth_token_payload = {
             'expires_in': auth_token_expiration.timestamp()
@@ -99,8 +96,8 @@ class TokensService:
             'expires_in': refresh_token_expiration.timestamp()
         }
 
-        auth_token = encode(auth_token_payload, SECRET, algorithm=self._encode_algorithm)
-        refresh_token = encode(refresh_token_payload, SECRET, algorithm=self._encode_algorithm)
+        auth_token = encode(auth_token_payload, Settings.APP_SECRET, algorithm=self._encode_algorithm)
+        refresh_token = encode(refresh_token_payload, Settings.APP_SECRET, algorithm=self._encode_algorithm)
 
         auth_token_model = AuthToken(
             id=id,

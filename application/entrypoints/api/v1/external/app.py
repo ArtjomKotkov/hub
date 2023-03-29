@@ -1,8 +1,9 @@
-from fastapi import FastAPI
-
 from .auth import auth_router
 
+from ....shared import RestApp
 
-app_external = FastAPI()
-app_external.include_router(auth_router)
 
+class ExternalApp(RestApp):
+    routers = [
+        ('', auth_router),
+    ]
