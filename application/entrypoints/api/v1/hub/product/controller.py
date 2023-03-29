@@ -32,6 +32,9 @@ def get(
 def list_(
     product_service: ProductsService = Depends(Provide[Logic.services.products_service]),
 ) -> GetProductsListResponse:
+    from errors import NotFound
+    raise NotFound('asfasf')
+
     response = product_service.list(GetProductsListRequest())
 
     return response
@@ -69,4 +72,3 @@ def delete(
     response = product_service.delete(DeleteProductRequest(id=product_id))
 
     return response
-

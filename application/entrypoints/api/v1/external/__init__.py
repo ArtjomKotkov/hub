@@ -1,1 +1,1 @@
-from .app import app_external
+from .app import ExternalApp
