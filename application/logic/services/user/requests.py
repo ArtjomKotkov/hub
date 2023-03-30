@@ -48,5 +48,5 @@ class UpdateUserRequest(BaseModel):
 
 
 class DeleteUserRequest(BaseModel):
-    phone: int
+    id: int
 

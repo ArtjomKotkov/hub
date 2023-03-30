@@ -57,9 +57,9 @@ class AuthService:
             role='default',
         ))
 
-        user = self._user_service.create(new_user_request)
+        response = self._user_service.create(new_user_request)
 
-        return user
+        return response.entity
 
     def _create_auth_tokens(self, user: User) -> tuple[str, str]:
         new_tokens_request = CreateTokensRequest(
