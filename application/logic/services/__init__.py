@@ -5,3 +5,4 @@ from .auth import *
 from .telegram import *
 from .products import *
 from .product_record import *
+from .user_settings import *

@@ -8,12 +8,18 @@ from .auth import AuthService
 from .telegram import TelegramExternalService, TelegramWebhookService
 from .product_record import ProductRecordService
 from .products import ProductsService
+from .user_settings import UserSettingsService
 
 from ..repositories import MemoryRepository
 
 
 class Services(containers.DeclarativeContainer):
     user_repo = MemoryRepository(primary_key='id')
+
+    user_settings = providers.Factory(
+        UserSettingsService,
+        user_settings_repo=MemoryRepository(primary_key='id'),
+    )
 
     user = providers.Factory(
         UserService,

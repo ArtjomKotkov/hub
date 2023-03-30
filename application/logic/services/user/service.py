@@ -8,6 +8,13 @@ from .requests import (
     CreateUserRequest, UpdateUserRequest,
     DeleteUserRequest,
 )
+from .responses import (
+    GetUserResponse, ListUserResponse,
+    CreateUserResponse, UpdateUserResponse,
+    DeleteUserResponse,
+)
+
+from ..user_settings import UserSettingsService
 
 from ...repositories import Repository
 from ...models import User
@@ -20,34 +27,37 @@ __all__ = [
 class UserService:
     def __init__(
         self,
-        user_repo: Repository[User]
+        user_repo: Repository[User],
+        user_settings_service: UserSettingsService,
     ):
         self._user_repo = user_repo
+        self._user_settings_service = user_settings_service
 
-    def get(self, request: GetUserRequest) -> User:
+    def get(self, request: GetUserRequest) -> GetUserResponse:
         model = self._user_repo.find_one(User.id == request.id)
         if not model:
             raise NotFound()
 
-        return model
+        return GetUserResponse(entity=model)
 
-    def list(self, request: ListUserRequest) -> List[User]:
+    def list(self, request: ListUserRequest) -> ListUserResponse:
         models = self._user_repo.find(self._make_search_spec(request))
 
-        return models
+        return ListUserResponse(entities=models)
 
-    def create(self, request: CreateUserRequest) -> User:
-        new_model = User(**request.fields.dict())
+    def create(self, request: CreateUserRequest) -> CreateUserResponse:
+        user = User(**request.fields.dict())
 
-        model = self._user_repo.find_one(User.id == new_model.id)
+        model = self._user_repo.find_one(User.id == user.id)
         if model:
             raise AlreadyExists()
 
-        saved_model = self._user_repo.save(new_model)
+        saved_user = self._user_repo.save(user)
+        self._user_settings_service.init_user(saved_user)
 
-        return saved_model
+        return CreateUserResponse(entity=saved_user)
 
-    def update(self, request: UpdateUserRequest) -> User:
+    def update(self, request: UpdateUserRequest) -> UpdateUserResponse:
         updating_model = User(phone=request.phone, **request.fields.dict())
 
         model = self._user_repo.find_one(User.id == updating_model.id)
@@ -56,14 +66,16 @@ class UserService:
 
         saved_model = self._user_repo.save(updating_model)
 
-        return saved_model
+        return UpdateUserResponse(entity=saved_model)
 
-    def delete(self, request: DeleteUserRequest) -> None:
-        model = self._user_repo.find_one(User.phone == request.phone)
+    def delete(self, request: DeleteUserRequest) -> DeleteUserResponse:
+        model = self._user_repo.find_one(User.id == request.id)
         if not model:
             raise NotFound()
 
         self._user_repo.delete(model)
+
+        return DeleteUserResponse()
 
     @staticmethod
     def _make_search_spec(request: ListUserRequest) -> Evaluable:

@@ -32,8 +32,9 @@ class RestApp:
         for conf in self.routers:
             prefix, router = conf
 
+            print(f'\033[94m{"  "*(self._depth+1)}{prefix if prefix != "" else "/"}\033[00m')
             for route in router.routes:
-                print(f'{"  "*(self._depth+1)}- {route.path} - {route.name} - [{",".join(route.methods)}]')
+                print(f'{"  "*(self._depth+2)}{route.path} - {route.name} - [{",".join(route.methods)}]')
             self._fast_api_app.include_router(router, prefix=prefix)
             print('\n', end='')
 
@@ -79,4 +80,4 @@ class RestApp:
         print(self)
 
     def __repr__(self):
-        return f'{"  "*self._depth}{self._path} - {self.__class__.__name__}'
+        return f'\033[92m{"  "*self._depth}{self._path} - {self.__class__.__name__}\033[00m'
