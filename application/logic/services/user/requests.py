@@ -26,7 +26,7 @@ class UserCreateFields(UserCommonFields):
     id: int
 
 
-class UserUpdateFields(UserCommonFields):
+class UserUpdateFields(BaseModel):
     role: str
 
 
@@ -43,7 +43,7 @@ class CreateUserRequest(BaseModel):
 
 
 class UpdateUserRequest(BaseModel):
-    phone: int
+    id: int
     fields: UserUpdateFields
 
 

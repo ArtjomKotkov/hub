@@ -21,15 +21,15 @@ class Services(containers.DeclarativeContainer):
         user_settings_repo=MemoryRepository(primary_key='id'),
     )
 
-    user = providers.Factory(
-        UserService,
-        user_repo=user_repo,
-    )
-
     tokens = providers.Factory(
         TokensService,
         auth_token_repo=MemoryRepository(primary_key='token'),
         refresh_token_repo=MemoryRepository(primary_key='refresh_token'),
+        user_repo=user_repo,
+    )
+
+    user = providers.Factory(
+        UserService,
         user_repo=user_repo,
     )
 

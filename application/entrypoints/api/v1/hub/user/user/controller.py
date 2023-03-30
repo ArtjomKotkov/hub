@@ -6,6 +6,8 @@ from application.logic import (
     GetUserRequest, GetUserResponse,
     ListUserRequest, ListUserResponse,
     DeleteUserRequest, DeleteUserResponse,
+    UpdateUserRequest, UpdateUserResponse,
+    UserUpdateFields,
 )
 
 
@@ -40,5 +42,17 @@ def list(
     user_service: UserService = Depends(Provide[Logic.services.user]),
 ) -> DeleteUserResponse:
     response = user_service.delete(DeleteUserRequest(id=user_id))
+
+    return response
+
+
+@user_router.post('/{user_id}')
+@inject
+def update(
+    user_id: int,
+    data: UserUpdateFields,
+    user_service: UserService = Depends(Provide[Logic.services.user]),
+) -> UpdateUserResponse:
+    response = user_service.update(UpdateUserRequest(id=user_id, fields=data))
 
     return response
