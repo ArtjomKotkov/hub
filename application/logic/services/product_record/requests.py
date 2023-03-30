@@ -17,6 +17,7 @@ class AddProductRecordFields(BaseModel):
     product: UUID4
     weight: int
     date: date
+    owner: int
 
 
 class UpdateProductRecordFields(BaseModel, extra=Extra.ignore):

@@ -29,6 +29,7 @@ class ProductRecordService:
 
         product_record = ProductRecord(
             id=count+1,
+            owner=request.fields.owner,
             product=request.fields.product,
             weight=request.fields.product,
             date=request.fields.date,

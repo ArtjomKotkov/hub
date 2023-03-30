@@ -1,5 +1,3 @@
-from typing import List
-
 from errors import NotFound, AlreadyExists
 from modeller import Evaluable
 
