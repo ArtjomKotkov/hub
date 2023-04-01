@@ -14,4 +14,4 @@ class Product(SModel):
     carbohydrate: float
     fat: float
 
-    owner_id: id
+    owner_id: int

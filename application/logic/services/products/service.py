@@ -89,7 +89,7 @@ class ProductsService:
 
     def add(self, request: CreateProductRequest) -> CreateProductResponse:
         self._access_control_service.check(request.requestor, self.feature, 'access')
-        self._access_control_service.check(request.requestor, Product, 'create')
+        self._access_control_service.check(request.requestor, Product, 'write')
 
         product = Product(**request.fields.dict(), owner_id=request.requestor.id)
 
