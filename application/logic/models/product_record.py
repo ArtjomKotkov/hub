@@ -7,6 +7,7 @@ from modeller import SModel
 
 class ProductRecord(SModel):
     id: int
+    owner: int
     product: UUID4
     weight: int
     date: date

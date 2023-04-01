@@ -9,6 +9,7 @@ from .telegram import TelegramExternalService, TelegramWebhookService
 from .product_record import ProductRecordService
 from .products import ProductsService
 from .user_settings import UserSettingsService
+from .access_control import AccessControlService
 
 from ..repositories import MemoryRepository
 
@@ -16,20 +17,22 @@ from ..repositories import MemoryRepository
 class Services(containers.DeclarativeContainer):
     user_repo = MemoryRepository(primary_key='id')
 
+    access_control = AccessControlService(user_repo=user_repo)
+
     user_settings = providers.Factory(
         UserSettingsService,
         user_settings_repo=MemoryRepository(primary_key='id'),
-    )
-
-    user = providers.Factory(
-        UserService,
-        user_repo=user_repo,
     )
 
     tokens = providers.Factory(
         TokensService,
         auth_token_repo=MemoryRepository(primary_key='token'),
         refresh_token_repo=MemoryRepository(primary_key='refresh_token'),
+        user_repo=user_repo,
+    )
+
+    user = providers.Factory(
+        UserService,
         user_repo=user_repo,
     )
 

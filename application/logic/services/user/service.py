@@ -1,5 +1,3 @@
-from typing import List
-
 from errors import NotFound, AlreadyExists
 from modeller import Evaluable
 
@@ -14,6 +12,7 @@ from .responses import (
     DeleteUserResponse,
 )
 
+from ..tokens import TokensService
 from ..user_settings import UserSettingsService
 
 from ...repositories import Repository
@@ -29,14 +28,16 @@ class UserService:
         self,
         user_repo: Repository[User],
         user_settings_service: UserSettingsService,
+        tokens_service: TokensService,
     ):
         self._user_repo = user_repo
         self._user_settings_service = user_settings_service
+        self._tokens_service = tokens_service
 
     def get(self, request: GetUserRequest) -> GetUserResponse:
         model = self._user_repo.find_one(User.id == request.id)
         if not model:
-            raise NotFound()
+            raise NotFound('user-not_found')
 
         return GetUserResponse(entity=model)
 
@@ -58,15 +59,21 @@ class UserService:
         return CreateUserResponse(entity=saved_user)
 
     def update(self, request: UpdateUserRequest) -> UpdateUserResponse:
-        updating_model = User(phone=request.phone, **request.fields.dict())
+        model = User(id=request.id, **request.fields.dict())
 
-        model = self._user_repo.find_one(User.id == updating_model.id)
-        if not model:
+        old_user = self._user_repo.find_one(User.id == model.id)
+        if not old_user:
             raise NotFound()
 
-        saved_model = self._user_repo.save(updating_model)
+        new_user = self._user_repo.save(model)
 
-        return UpdateUserResponse(entity=saved_model)
+        self._update_hook(old_user, new_user)
+
+        return UpdateUserResponse(entity=new_user)
+
+    def _update_hook(self, old_user: User, new_user: User) -> None:
+        if old_user.role != new_user.role:
+            self._tokens_service.delete_user_tokens(new_user)
 
     def delete(self, request: DeleteUserRequest) -> DeleteUserResponse:
         model = self._user_repo.find_one(User.id == request.id)

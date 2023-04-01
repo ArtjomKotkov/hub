@@ -2,6 +2,9 @@ from typing import Optional
 
 from pydantic import BaseModel, UUID4
 
+from ..shared import RequestorRequest
+
+
 __all__ = [
     'CreateProductRequest',
     'CreateProductFields',
@@ -10,14 +13,20 @@ __all__ = [
     'GetProductsListRequest',
     'GetProductRequest',
     'DeleteProductRequest',
+    'GetProductListFilters',
 ]
 
 
-class GetProductRequest(BaseModel):
+class GetProductRequest(RequestorRequest):
     id: UUID4
 
 
-class GetProductsListRequest(BaseModel): ...
+class GetProductListFilters(BaseModel):
+    owner_id: Optional[int]
+
+
+class GetProductsListRequest(RequestorRequest):
+    filters: GetProductListFilters
 
 
 class CreateProductFields(BaseModel):
@@ -31,14 +40,14 @@ class CreateProductFields(BaseModel):
 class UpdateProductFields(CreateProductFields): ...
 
 
-class CreateProductRequest(BaseModel):
+class CreateProductRequest(RequestorRequest):
     fields: CreateProductFields
 
 
-class UpdateProductRequest(BaseModel):
+class UpdateProductRequest(RequestorRequest):
     id: UUID4
     fields: UpdateProductFields
 
 
-class DeleteProductRequest(BaseModel):
+class DeleteProductRequest(RequestorRequest):
     id: UUID4

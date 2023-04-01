@@ -36,7 +36,6 @@ class RestApp:
             for route in router.routes:
                 print(f'{"  "*(self._depth+2)}{route.path} - {route.name} - [{",".join(route.methods)}]')
             self._fast_api_app.include_router(router, prefix=prefix)
-            print('\n', end='')
 
         for middleware in self.middlewares:
             self._fast_api_app.add_middleware(middleware)
@@ -80,4 +79,4 @@ class RestApp:
         print(self)
 
     def __repr__(self):
-        return f'\033[92m{"  "*self._depth}{self._path} - {self.__class__.__name__}\033[00m'
+        return f'\033[92m{"  "*self._depth}{self._path}\033[00m - \033[93m{self.__class__.__name__}\033[00m'
