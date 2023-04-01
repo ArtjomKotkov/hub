@@ -38,4 +38,4 @@ def check_authentication(
     if payload.expires_in < datetime.now():
         raise Unauthorized('auth-token-expired')
 
-    request.state.requestor = Requestor(id=payload.id, role=payload.role)
+    request.state.requestor = Requestor(id=payload.id, type='user', role=payload.role)

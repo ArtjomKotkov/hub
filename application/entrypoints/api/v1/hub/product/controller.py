@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends
 from dependency_injector.wiring import Provide, inject
 from pydantic import UUID4
@@ -10,6 +12,7 @@ from application.logic import (
     CreateProductFields, CreateProductResponse,
     UpdateProductRequest, UpdateProductFields,
     UpdateProductResponse, GetProductRequest,
+    GetProductListFilters,
 )
 
 
@@ -30,12 +33,14 @@ def get(
 @product_router.get('/')
 @inject
 def list_(
+    owner_id: Optional[int] = None,
     product_service: ProductsService = Depends(Provide[Logic.services.products_service]),
 ) -> GetProductsListResponse:
-    from errors import NotFound
-    raise NotFound('asfasf')
-
-    response = product_service.list(GetProductsListRequest())
+    response = product_service.list(
+        GetProductsListRequest(
+            filters=GetProductListFilters(owner_id=owner_id)
+        )
+    )
 
     return response
 

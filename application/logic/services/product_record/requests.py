@@ -2,6 +2,8 @@ from datetime import date
 
 from pydantic import BaseModel, UUID4, Extra
 
+from ..shared import RequestorRequest
+
 
 __all__ = [
     'AddProductRecordFields',
@@ -10,6 +12,7 @@ __all__ = [
     'UpdateProductRecordRequest',
     'DeleteProductRecordRequest',
     'ListProductRecordRequest',
+    'ListProductRecordFilters',
 ]
 
 
@@ -24,18 +27,22 @@ class UpdateProductRecordFields(BaseModel, extra=Extra.ignore):
     weight: int
 
 
-class AddProductRecordRequest(BaseModel):
+class AddProductRecordRequest(RequestorRequest):
     fields: AddProductRecordFields
 
 
-class UpdateProductRecordRequest(BaseModel):
+class UpdateProductRecordRequest(RequestorRequest):
     id: int
     fields: UpdateProductRecordFields
 
 
-class DeleteProductRecordRequest(BaseModel):
+class DeleteProductRecordRequest(RequestorRequest):
     id: int
 
 
-class ListProductRecordRequest(BaseModel):
+class ListProductRecordFilters(BaseModel):
     date: date
+
+
+class ListProductRecordRequest(RequestorRequest):
+    filters: ListProductRecordFilters

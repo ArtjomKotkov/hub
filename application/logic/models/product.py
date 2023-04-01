@@ -13,3 +13,5 @@ class Product(SModel):
     protein: float
     carbohydrate: float
     fat: float
+
+    owner_id: id

@@ -2,6 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from ..shared import RequestorRequest
+
 
 __all__ = [
     'UserSettingsFields',
@@ -17,10 +19,10 @@ class UserSettingsFields(BaseModel):
     age: Optional[int]
 
 
-class GetUserSettingsRequest(BaseModel):
+class GetUserSettingsRequest(RequestorRequest):
     id: int
 
 
-class UpdateUserSettingsRequest(BaseModel):
+class UpdateUserSettingsRequest(RequestorRequest):
     id: int
     fields: UserSettingsFields
