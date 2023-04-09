@@ -17,12 +17,13 @@ from ..repositories import MemoryRepository
 
 class Services(containers.DeclarativeContainer):
     user_repo = MemoryRepository(primary_key='id')
+    user_settings_repo = MemoryRepository(primary_key='id')
 
     access_control = AccessControlService(user_repo=user_repo)
 
     user_settings = providers.Factory(
         UserSettingsService,
-        user_settings_repo=MemoryRepository(primary_key='id'),
+        user_settings_repo=user_settings_repo,
         access_control_service=access_control
     )
 
@@ -63,7 +64,9 @@ class Services(containers.DeclarativeContainer):
 
     products_service = providers.Factory(
         ProductsService,
-        products_repo=products_repo
+        access_control_service=access_control,
+        products_repo=products_repo,
+        user_settings_repo=user_settings_repo,
     )
 
     prodict_record_service = providers.Factory(

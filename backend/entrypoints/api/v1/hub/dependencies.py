@@ -26,16 +26,18 @@ class TokenDecodeError(Error):
 def check_authentication(
     request: Request,
 ):
+    encode_algorithm = 'HS256'
+
     auth_token = request.cookies.get(Settings.AUTH_TOKEN_COOKIE_NAME)
     if auth_token is None:
         raise Unauthorized('auth_token-not_provided')
 
     try:
-        payload = AuthTokenPayload(**decode(auth_token, key=Settings.APP_SECRET))
+        payload = AuthTokenPayload(**decode(auth_token, key=Settings.APP_SECRET, algorithms=encode_algorithm))
     except DecodeError:
         raise TokenDecodeError('auth_token-decode_error')
 
-    if payload.expires_in < datetime.now():
+    if payload.expires_in < datetime.now().timestamp():
         raise Unauthorized('auth-token-expired')
 
     request.state.requestor = Requestor(id=payload.id, type='user', role=payload.role)

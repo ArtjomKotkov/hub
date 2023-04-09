@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from errors import NotFound
 
 from .requests import (
@@ -74,7 +76,10 @@ class ProductsService:
 
         if request.filters.owner_id is None:
             users_with_shared_products = self._user_settings_repo.find(UserSettings.share_products == True)
-            return Product.owner_id in [settings.owner_id for settings in users_with_shared_products]
+            user_ids_with_shared_products = {settings.owner_id for settings in users_with_shared_products}
+            user_ids_with_shared_products.add(request.requestor.id)
+
+            return Product.owner_id.in_(user_ids_with_shared_products)
         elif request.requestor.id != owner_id:
             product_owner_settings = self._user_settings_repo.find_one(
                 UserSettings.owner_id == owner_id
@@ -91,7 +96,11 @@ class ProductsService:
         self._access_control_service.check(request.requestor, self.feature, 'access')
         self._access_control_service.check(request.requestor, Product, 'write')
 
-        product = Product(**request.fields.dict(), owner_id=request.requestor.id)
+        product = Product(
+            id=uuid4(),
+            **request.fields.dict(),
+            owner_id=request.requestor.id
+        )
 
         product = self._products_repo.save(product)
 

@@ -89,10 +89,10 @@ class TokensService:
         )
 
     def _generate_tokens(self, user: User) -> tuple[str, str]:
-        current_datetime = datetime.now()
+        current_datetime = datetime.now().timestamp()
 
-        auth_token_expiration = current_datetime + timedelta(seconds=Settings.AUTH_TOKEN_EXPIRES_IN)
-        refresh_token_expiration = current_datetime + timedelta(seconds=Settings.REFRESH_TOKEN_EXPIRES_IN)
+        auth_token_expiration = current_datetime + Settings.AUTH_TOKEN_EXPIRES_IN
+        refresh_token_expiration = current_datetime + Settings.REFRESH_TOKEN_EXPIRES_IN
 
         auth_token_payload = AuthTokenPayload(
             id=user.id,

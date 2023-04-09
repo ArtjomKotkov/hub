@@ -26,10 +26,10 @@ class BaseTokenPayload(BaseModel):
 
 
 class AuthTokenPayload(BaseTokenPayload):
-    expires_in: datetime
+    expires_in: float
     id: int
     role: str
 
 
 class RefreshTokenPayload(BaseTokenPayload):
-    expires_in: datetime
+    expires_in: float
