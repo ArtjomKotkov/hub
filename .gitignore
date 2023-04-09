@@ -2,5 +2,5 @@
 __pycache__
 *.egg-info
 build
-configs/
-main.py
+src/configs/
+src/main.py
